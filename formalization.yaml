@@ -1,0 +1,132 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Hamiltonicity and connectivity thresholds of the random graph G(n, p)"
+  description: >-
+    A Lean 4 / Mathlib formalization of two classical threshold results for the binomial random
+    graph G(n, p), modelled as a finite product probability space with one independent
+    Bernoulli(p) coin per pair of vertices: Pósa's theorem (1976) that G(n, p) with
+    p ≥ C log n / n (here C = 80) is Hamiltonian with probability tending to 1, and both sides
+    of the Erdős–Rényi connectivity threshold (1959): G(n, (log n ± ω(n))/n) with ω(n) → ∞ is
+    connected with probability tending to 1, resp. 0. Hamiltonicity and connectivity are
+    Mathlib's SimpleGraph.IsHamiltonian and SimpleGraph.Connected. Mathlib does not contain
+    random graphs or these results.
+  authors:
+    - "Juan Pablo Traverso Gianini"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Juan Pablo Traverso Gianini"
+
+classification:
+  arxiv: ["math.CO", "math.PR"]
+  msc2020: ["05C80", "05C45", "05C40"]
+
+sources:
+  - title: "Hamiltonian circuits in random graphs"
+    authors:
+      - "L. Pósa"
+    id: "doi:10.1016/0012-365X(76)90068-6"
+    type: "paper"
+    location: "Discrete Mathematics 14 (1976), 359–364"
+    relationship: "formalizes"
+    note: >-
+      The main theorem (Hamiltonicity of G(n, C log n / n) with high probability). The formal
+      proof follows the rotation–extension method with boosters and a two-round exposure.
+    license: "all rights reserved"
+    author_endorsement: "n/a"
+  - title: "On random graphs I"
+    authors:
+      - "P. Erdős"
+      - "A. Rényi"
+    id: "doi:10.5486/PMD.1959.6.3-4.12"
+    type: "paper"
+    location: "Publicationes Mathematicae Debrecen 6 (1959), 290–297"
+    relationship: "formalizes"
+    note: "The connectivity threshold (log n ± ω(n))/n, both sides."
+    license: "all rights reserved"
+    author_endorsement: "n/a"
+
+status:
+  scope: >-
+    All three theorems are proved as stated. Pósa's theorem is proved with the explicit constant
+    C = 80; the sharp Hamiltonicity threshold of Komlós–Szemerédi and Bollobás is not stated.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "autonomous"
+      models: ["Aristotle (Harmonic)"]
+      framework: "Aristotle CLI"
+      tool_setup: >-
+        Produced the proofs (Aristotle project 83f86092) on the pinned toolchain, on top of the
+        finite product probability of the author's Ehard–Glock–Joos library, from the formal
+        statements and a suggested proof route.
+      cost:
+        wall_time: "about 2.5 hours"
+        spend_usd: "not tracked"
+        hardware: "API-only"
+      prompting_notes: "Formal model, statements and a natural-language proof route."
+    - method: "agent"
+      models: ["Claude Opus 5.5"]
+      framework: "Claude Code (Anthropic)"
+      tool_setup: >-
+        Design of the model and statements (with sanity checks for tiny n), audit of the return
+        (statements, unchanged library files, headers, no sorry or native_decide), extraction of
+        the needed library modules and the Palomar packaging, checked with `lake build`,
+        `#print axioms` and a comparison of the elaborated Challenge and Solution declarations
+        (Lean v4.35.0-rc3, Mathlib c55e6e786f49471c72fbddbec5415808896aec1e).
+      cost:
+        wall_time: "a few hours"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: "Natural-language instructions in Spanish, directed by the author."
+  spend_usd: "subscription-based"
+  notes: >-
+    The results were chosen by the human author; the Lean proofs are AI-generated and
+    mechanically verified (no `sorry`, axioms limited to propext, Classical.choice and Quot.sound,
+    identical elaborated types for the Challenge/Solution pair).
+
+fidelity:
+  divergences: >-
+    G(n, p) is a finite product space over the unordered pairs of distinct vertices of Fin n, with
+    probabilities computed by finite sums (pProb); asymptotic statements are written with
+    explicit quantifiers (Pósa) or Filter.Tendsto (connectivity). Pósa's statement is uniform
+    over p ∈ [C log n / n, 1]. In the connectivity statements the edge probability is clipped to
+    [0, 1] by min 1 / max 0, which only matters for small n. Hamiltonicity follows Mathlib's
+    convention (the one-vertex graph is Hamiltonian).
+
+review:
+  status: "agent-reviewed"
+  reviewers:
+    - "Claude Opus 5.5 (AI agent in Claude Code, acting for the author)"
+  notes: >-
+    Agent review by Claude Opus 5.5, distinct from the mechanical verification: the agent
+    compared the statements with the papers, checked the model on tiny cases, checked that the
+    reused probability module is byte-identical to the registered Ehard–Glock–Joos package, and
+    confirmed by a local `lake build`, `#print axioms` and a comparison of the fully elaborated
+    Challenge and Solution declarations that the proofs use no `sorry` and only propext,
+    Classical.choice and Quot.sound. The author directed the work. No independent human
+    mathematical review has been performed. The theorems are those of the cited papers; no
+    mathematical novelty is claimed.
+
+alignment:
+  namespace: "RandomGraphThresholds"
+  statements:
+    - source: "Pósa (1976), main theorem (with C = 80)"
+      lean: "RandomGraphThresholds.posa"
+      module: "Challenge"
+      status: "proved"
+    - source: "Erdős–Rényi (1959), connectivity threshold, upper side"
+      lean: "RandomGraphThresholds.connected_of_log_add"
+      module: "Challenge"
+      status: "proved"
+    - source: "Erdős–Rényi (1959), connectivity threshold, lower side"
+      lean: "RandomGraphThresholds.not_connected_of_log_sub"
+      module: "Challenge"
+      status: "proved"
+
+acknowledgements: >-
+  Mathlib and the Lean community; Harmonic's Aristotle.

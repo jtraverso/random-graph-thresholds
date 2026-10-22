@@ -1,0 +1,16 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "RandomGraphThresholds.posa",
+    "RandomGraphThresholds.connected_of_log_add",
+    "RandomGraphThresholds.not_connected_of_log_sub"
+  ],
+  "definition_names": [],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ],
+  "enable_nanoda": true
+}
