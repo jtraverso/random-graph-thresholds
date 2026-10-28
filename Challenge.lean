@@ -14,7 +14,7 @@ Statements in the namespace `RandomGraphThresholds`:
 
 * `posa`: L. Pósa, *Hamiltonian circuits in random graphs*, Discrete Math. 14 (1976) 359–364:
   for some constant `C`, `G(n, p)` with `p ≥ C log n / n` is Hamiltonian with probability
-  tending to `1`.
+  tending to `1`; `posa_eighty` states it with the constant `C = 80`.
 * `connected_of_log_add`, `not_connected_of_log_sub`: the connectivity threshold of Erdős and
   Rényi (1959): `G(n, (log n ± ω(n))/n)` with `ω(n) → ∞` is connected with probability tending
   to `1`, resp. `0`.
@@ -64,6 +64,13 @@ noncomputable def gnpProb (n : ℕ) (p : ℝ) (Q : SimpleGraph (Fin n) → Prop)
 is Hamiltonian with probability at least `1 - ε` whenever `C log n / n ≤ p ≤ 1`. -/
 theorem posa : ∃ C : ℝ, 0 < C ∧ ∀ ε : ℝ, 0 < ε → ∃ n₀ : ℕ, ∀ n : ℕ, n₀ ≤ n →
     ∀ p : ℝ, C * Real.log n / n ≤ p → p ≤ 1 →
+    1 - ε ≤ gnpProb n p (fun G => G.IsHamiltonian) := by
+  sorry
+
+/-- **Pósa (1976), with an explicit constant.** For every `ε > 0` and all large `n`, `G(n, p)` is
+Hamiltonian with probability at least `1 - ε` whenever `80 log n / n ≤ p ≤ 1`. -/
+theorem posa_eighty : ∀ ε : ℝ, 0 < ε → ∃ n₀ : ℕ, ∀ n : ℕ, n₀ ≤ n →
+    ∀ p : ℝ, 80 * Real.log n / n ≤ p → p ≤ 1 →
     1 - ε ≤ gnpProb n p (fun G => G.IsHamiltonian) := by
   sorry
 

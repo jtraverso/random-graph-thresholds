@@ -3,6 +3,7 @@
   "solution_module": "Solution",
   "theorem_names": [
     "RandomGraphThresholds.posa",
+    "RandomGraphThresholds.posa_eighty",
     "RandomGraphThresholds.connected_of_log_add",
     "RandomGraphThresholds.not_connected_of_log_sub"
   ],

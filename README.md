@@ -7,11 +7,11 @@ graph `G(n, p)`:
 
 * **Pósa's theorem** (L. Pósa, *Hamiltonian circuits in random graphs*, Discrete Math. 14 (1976)
   359–364). For some constant `C`, `G(n, p)` with `p ≥ C log n / n` is Hamiltonian with
-  probability tending to `1`. The proof gives `C = 80`.
+  probability tending to `1`; `posa_eighty` states it with `C = 80`.
 * **The connectivity threshold of Erdős and Rényi** (*On random graphs I*, Publ. Math.
   Debrecen 6 (1959) 290–297), on both sides. If `ω(n) → ∞`, then `G(n, (log n + ω(n))/n)` is
   connected with probability tending to `1`, and `G(n, (log n − ω(n))/n)` with probability
-  tending to `0`.
+  tending to `0` (edge probabilities clipped to `[0, 1]`, see below).
 
 All statements are in the namespace `RandomGraphThresholds` of `Challenge.lean`.
 
@@ -24,11 +24,22 @@ probability that `G(n, p)` has property `Q`. The product-space definitions `pw`,
 are copied in the Challenge. Hamiltonicity and connectivity are Mathlib's
 `SimpleGraph.IsHamiltonian` and `SimpleGraph.Connected`.
 
+Mathlib defines the binomial random graph as a measure on `SimpleGraph V`
+(`SimpleGraph.binomialRandom`, notation `G(V, p)`). This project does not use it: it works with
+the finite product model above, and no equivalence between the two is formalized. The threshold
+theorems below are not in Mathlib.
+
+In the connectivity statements the edge probability is `min 1 ((log n + ω n)/n)`, resp.
+`max 0 ((log n − ω n)/n)`. The clipping can stay active for arbitrarily large `n` (with
+`ω(n) = n²`, both expressions leave `[0, 1]` for all large `n`), so the theorems are about these
+clipped probabilities; they agree with the unclipped ones whenever `(log n ± ω(n))/n ∈ [0, 1]`.
+
 ## Results
 
 | Lean | Statement |
 |---|---|
 | `posa` | `∃ C > 0, ∀ ε > 0, ∃ n₀, ∀ n ≥ n₀, ∀ p ∈ [C log n / n, 1], P(G(n, p) is Hamiltonian) ≥ 1 − ε` |
+| `posa_eighty` | `∀ ε > 0, ∃ n₀, ∀ n ≥ n₀, ∀ p ∈ [80 log n / n, 1], P(G(n, p) is Hamiltonian) ≥ 1 − ε` |
 | `connected_of_log_add` | `ω → ∞ ⟹ P(G(n, min 1 ((log n + ω n)/n)) is connected) → 1` |
 | `not_connected_of_log_sub` | `ω → ∞ ⟹ P(G(n, max 0 ((log n − ω n)/n)) is connected) → 0` |
 

@@ -59,6 +59,13 @@ theorem posa : ∃ C : ℝ, 0 < C ∧ ∀ ε : ℝ, 0 < ε → ∃ n₀ : ℕ, �
     1 - ε ≤ gnpProb n p (fun G => G.IsHamiltonian) :=
   Pseudorandom.RandomGraphs.posa
 
+/-- **Pósa (1976), with an explicit constant.** For every `ε > 0` and all large `n`, `G(n, p)` is
+Hamiltonian with probability at least `1 - ε` whenever `80 log n / n ≤ p ≤ 1`. -/
+theorem posa_eighty : ∀ ε : ℝ, 0 < ε → ∃ n₀ : ℕ, ∀ n : ℕ, n₀ ≤ n →
+    ∀ p : ℝ, 80 * Real.log n / n ≤ p → p ≤ 1 →
+    1 - ε ≤ gnpProb n p (fun G => G.IsHamiltonian) :=
+  Pseudorandom.RandomGraphs.posa_eighty
+
 /-- **Erdős–Rényi (1959), connectivity, upper side.** If `ω(n) → ∞`, then
 `G(n, (log n + ω(n))/n)` is connected with probability tending to `1`. -/
 theorem connected_of_log_add (ω : ℕ → ℝ) (hω : Filter.Tendsto ω Filter.atTop Filter.atTop) :

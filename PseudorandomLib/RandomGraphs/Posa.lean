@@ -226,12 +226,12 @@ theorem eventually_not_hamCycle_le : ∀ᶠ n : ℕ in atTop,
     exact this
   linarith
 
-/-- **Pósa (1976)**: there is `C > 0` such that for every `ε > 0` and all large `n`, `G(n, p)` is
-Hamiltonian with probability at least `1 - ε` for every `p ∈ [C log n / n, 1]` (with `C = 80`). -/
-theorem posa : ∃ C : ℝ, 0 < C ∧ ∀ ε : ℝ, 0 < ε → ∃ n₀ : ℕ, ∀ n : ℕ, n₀ ≤ n →
-    ∀ p : ℝ, C * Real.log n / n ≤ p → p ≤ 1 →
+/-- **Pósa (1976), with the constant `80`**: for every `ε > 0` and all large `n`, `G(n, p)` is
+Hamiltonian with probability at least `1 - ε` for every `p ∈ [80 log n / n, 1]`. -/
+theorem posa_eighty : ∀ ε : ℝ, 0 < ε → ∃ n₀ : ℕ, ∀ n : ℕ, n₀ ≤ n →
+    ∀ p : ℝ, 80 * Real.log n / n ≤ p → p ≤ 1 →
     1 - ε ≤ gnpProb n p (fun G => G.IsHamiltonian) := by
-  refine ⟨80, by norm_num, fun ε hε => ?_⟩
+  intro ε hε
   obtain ⟨n₀, hn₀⟩ := eventually_atTop.1 ((errors_tendsto.eventually (gt_mem_nhds hε)).and
     (eventually_not_hamCycle_le.and eventually_good))
   refine ⟨n₀, fun n hn p hp hp1 => ?_⟩
@@ -263,5 +263,13 @@ theorem posa : ∃ C : ℝ, 0 < C ∧ ∀ ε : ℝ, 0 < ε → ∃ n₀ : ℕ, �
         pProb_mono hP' fun ω h => HasHamCycle.isHamiltonian h h3
     _ ≤ gnpProb n p (fun G => G.IsHamiltonian) :=
         gnpProb_mono (fun G H hGH hG => hG.mono hGH) hp'0 hp'p hp1
+
+/-- **Pósa (1976)**: there is `C > 0` such that for every `ε > 0` and all large `n`, `G(n, p)` is
+Hamiltonian with probability at least `1 - ε` for every `p ∈ [C log n / n, 1]` (`C = 80` works,
+`posa_eighty`). -/
+theorem posa : ∃ C : ℝ, 0 < C ∧ ∀ ε : ℝ, 0 < ε → ∃ n₀ : ℕ, ∀ n : ℕ, n₀ ≤ n →
+    ∀ p : ℝ, C * Real.log n / n ≤ p → p ≤ 1 →
+    1 - ε ≤ gnpProb n p (fun G => G.IsHamiltonian) :=
+  ⟨80, by norm_num, posa_eighty⟩
 
 end Pseudorandom.RandomGraphs
